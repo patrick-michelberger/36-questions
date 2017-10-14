@@ -17,7 +17,8 @@ module.exports = {
       this.emit(':tellWithCard',
           speechOutput.COMMON.WELCOME_FIRST_TIME,
           card.title,
-          card.content);
+          card.content,
+          card.imageObj);
     } else {
       this.emit(':tell',
           speechOutput.COMMON.WELCOME_BACK);
