@@ -15,6 +15,6 @@ exports.handler = (event, context) => {
   alexa.appId = config.APP_ID;
   alexa.registerHandlers(...intentHandlers);
   alexa.resources = speechOutput;
-  alexa.dynamoDBTableName = process.env.EVENT_GURU_SESSION_TABLE;
+  alexa.dynamoDBTableName = process.env.QUESTIONS_SESSION_TABLE;
   alexa.execute();
 };

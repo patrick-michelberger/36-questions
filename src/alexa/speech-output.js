@@ -7,7 +7,7 @@ const englishUsOutput = {
     STOP_MESSAGE: 'See you soon on 36 questions!',
   },
   COMMON: {
-    WELCOME_FIRST_TIME: 'Welcome to 36 Questions! The New York Times lists 36 questions you can ask someone if you want to fall in love. Or make your love even stronger. This skill provides the ideal experience for exploring these questions, so grab some wine, sit down with someone you want to love and lets get started.',
+    WELCOME_FIRST_TIME: 'Hi, ready to fall in love? I have 36 questions you can discuss if you want to fall in love - Or make your love even stronger. Is that ok for you?',
     WELCOME_BACK: 'Welcome back! ',
     HELP: '',
     UNHANDLED: 'Sorry, I could not understand you. What did you say? '

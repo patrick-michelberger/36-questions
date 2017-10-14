@@ -2,39 +2,79 @@
 
 const speechOutput = require('../speech-output');
 const cardBuilder = require('../utils/card-builder');
-const { STATES, SESSION_ATTRIBUTES } = require('../config');
+const {STATES, SESSION_ATTRIBUTES} = require('../config');
 
 const QUESTIONS = require('../../data/questions.json').Questions;
 
+console.log("SESSION: ", SESSION_ATTRIBUTES);
+
 module.exports = {
   'LaunchRequest' () {
-    const numberOfVisits = this.attributes[SESSION_ATTRIBUTES.NUMBER_OF_VISITS] || 1;
-    this.attributes[SESSION_ATTRIBUTES.NUMBER_OF_VISITS] = numberOfVisits + 1;
+    const numberOfVisits = this.attributes[SESSION_ATTRIBUTES.NUMBER_OF_VISITS]
+        || 1;
     this.attributes[SESSION_ATTRIBUTES.LAST_VISIT] = new Date();
 
-    if (numberOfVisits === 1) {
+    if (numberOfVisits == 1) {
       const card = cardBuilder.buildWelcomeCard();
-      this.emit(':tellWithCard',
+      this.emit(':askWithCard',
           speechOutput.COMMON.WELCOME_FIRST_TIME,
           card.title,
-          card.content);
+          card.content,
+          "Are you ready?");
     } else {
-      this.emit(':tell',
-          speechOutput.COMMON.WELCOME_BACK);
+      this.emit(':ask',
+          "Seems like you're getting to know each other better. Ready for another question?");
     }
   },
 
   'GetQuestionIntent' () {
-    const currentQuestionIndex = this.attributes[SESSION_ATTRIBUTES.CURRENT_QUESTION_INDEX] || 0;
+    console.log("GetQuestionIntent");
+    const currentQuestionIndex = this.attributes[SESSION_ATTRIBUTES.CURRENT_QUESTION_INDEX]
+        || 0;
 
     if (QUESTIONS.length > currentQuestionIndex) {
+      this.attributes[SESSION_ATTRIBUTES.CURRENT_QUESTION_INDEX] = currentQuestionIndex
+          + 1;
       this.emit(':tell', QUESTIONS[currentQuestionIndex]);
     } else {
+      this.attributes[SESSION_ATTRIBUTES.CURRENT_QUESTION_INDEX] = 0;
       this.emit(':tell', 'Congratulations. You have answered all questions');
     }
   },
 
-  /**
+  'SkipQuestionIntent'() {
+    console.log("SkipQuestionIntent");
+    const currentQuestionIndex = this.attributes[SESSION_ATTRIBUTES.CURRENT_QUESTION_INDEX] || 0;
+    this.attributes[SESSION_ATTRIBUTES.CURRENT_QUESTION_INDEX] = currentQuestionIndex + 1;
+    this.emit(':tell', 'Sure. We can come back to this question later.');
+  },
+
+  'ResetQuestionsIntent'() {
+    console.log("ResetQuestionsIntent");
+    this.attributes[SESSION_ATTRIBUTES.NUMBER_OF_VISITS] = 1;
+    this.attributes[SESSION_ATTRIBUTES.CURRENT_QUESTION_INDEX] = 0;
+    this.emit(':tell', 'Sure. See you later.');
+  },
+
+  'YesIntent'() {
+    const numberOfVisits = this.attributes[SESSION_ATTRIBUTES.NUMBER_OF_VISITS] || 1;
+
+    console.log("YesIntent: numberOfVisits: ", numberOfVisits);
+
+    if (numberOfVisits == 1) {
+      this.attributes[SESSION_ATTRIBUTES.NUMBER_OF_VISITS] = numberOfVisits + 1;
+      this.emit(':ask', "Okay. I'll give you a question and both of you should take turns answering. Ready?", "Ready?");
+    } else {
+      this.emit('GetQuestionIntent');
+    }
+  },
+
+  'NoIntent'() {
+    console.log("NoIntent");
+    this.emit(':tell', 'Sure. See you later.');
+  },
+
+    /**
    * This intent will be called when the user says "Stop" or "Cancel"
    */
   'AMAZON.CancelIntent'() {
@@ -52,6 +92,6 @@ module.exports = {
    */
   'Unhandled'() {
     console.error('Unhandled error in default intent');
-    this.emit(':ask', speechOutput.COMMON.UNHANDLED, speechOutput.COMMON.UNHANDLED);
+    this.emit(':tell', speechOutput.COMMON.UNHANDLED);
   }
 };
