@@ -1,0 +1,22 @@
+{
+  "name": "36-questions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "deploy:init": "serverless deploy",
+    "deploy:remove": "serverless remove",
+    "deploy": "serverless deploy function --function alexaSkill",
+    "invoke": "serverless invoke --function alexaSkill",
+    "logs:tail": "serverless logs --tail --function alexaSkill",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "alexa-sdk": "^1.0.14",
+    "dotenv-safe": "^4.0.4",
+    "serverless-webpack": "^3.1.2",
+    "webpack": "^3.7.1"
+  }
+}
