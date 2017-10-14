@@ -6,6 +6,8 @@ const STATES = {};
 
 const SESSION_ATTRIBUTES = {
   CURRENT_QUESTION_INDEX: 'currentQuestionIndex',
+  NUMBER_OF_VISITS: 'numberOfVisits',
+  LAST_VISIT: 'lastVisit',
 };
 
 module.exports = {

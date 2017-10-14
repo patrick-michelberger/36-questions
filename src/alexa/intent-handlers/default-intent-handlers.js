@@ -4,17 +4,34 @@ const speechOutput = require('../speech-output');
 const cardBuilder = require('../utils/card-builder');
 const { STATES, SESSION_ATTRIBUTES } = require('../config');
 
+const QUESTIONS = require('../../data/questions.json').Questions;
+
 module.exports = {
   'LaunchRequest' () {
-    const card = cardBuilder.buildWelcomeCard();
-    this.emit(':tellWithCard',
-        speechOutput.COMMON.WELCOME,
-        card.title,
-        card.content);
+    const numberOfVisits = this.attributes[SESSION_ATTRIBUTES.NUMBER_OF_VISITS] || 1;
+    this.attributes[SESSION_ATTRIBUTES.NUMBER_OF_VISITS] = numberOfVisits + 1;
+    this.attributes[SESSION_ATTRIBUTES.LAST_VISIT] = new Date();
+
+    if (numberOfVisits === 1) {
+      const card = cardBuilder.buildWelcomeCard();
+      this.emit(':tellWithCard',
+          speechOutput.COMMON.WELCOME_FIRST_TIME,
+          card.title,
+          card.content);
+    } else {
+      this.emit(':tell',
+          speechOutput.COMMON.WELCOME_BACK);
+    }
   },
 
   'GetQuestionIntent' () {
-    this.emit(':tell', "It works.");
+    const currentQuestionIndex = this.attributes[SESSION_ATTRIBUTES.CURRENT_QUESTION_INDEX] || 0;
+
+    if (QUESTIONS.length > currentQuestionIndex) {
+      this.emit(':tell', QUESTIONS[currentQuestionIndex]);
+    } else {
+      this.emit(':tell', 'Congratulations. You have answered all questions');
+    }
   },
 
   /**
