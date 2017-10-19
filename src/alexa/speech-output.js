@@ -9,8 +9,10 @@ const englishUsOutput = {
   COMMON: {
     WELCOME_FIRST_TIME: 'Hi, ready to fall in love? I have 36 questions you can discuss if you want to fall in love - Or make your love even stronger. Is that ok for you?',
     WELCOME_BACK: 'Welcome back! ',
-    HELP: '',
-    UNHANDLED: 'Sorry, I could not understand you. What did you say? '
+    UNHANDLED: 'Sorry, I could not understand you. What did you say? ',
+    GOODBYE: 'Good bye. See you later.',
+    HELP: 'Ask fall in love for a question?',
+    HELP_REPROMPT: 'Do you want to hear a new question?',
   },
   DEV_LOCALE: 'en'
 };

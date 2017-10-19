@@ -44,8 +44,10 @@ module.exports = {
 
   'SkipQuestionIntent'() {
     console.log("SkipQuestionIntent");
-    const currentQuestionIndex = this.attributes[SESSION_ATTRIBUTES.CURRENT_QUESTION_INDEX] || 0;
-    this.attributes[SESSION_ATTRIBUTES.CURRENT_QUESTION_INDEX] = currentQuestionIndex + 1;
+    const currentQuestionIndex = this.attributes[SESSION_ATTRIBUTES.CURRENT_QUESTION_INDEX]
+        || 0;
+    this.attributes[SESSION_ATTRIBUTES.CURRENT_QUESTION_INDEX] = currentQuestionIndex
+        + 1;
     this.emit(':tell', 'Sure. We can come back to this question later.');
   },
 
@@ -57,13 +59,16 @@ module.exports = {
   },
 
   'YesIntent'() {
-    const numberOfVisits = this.attributes[SESSION_ATTRIBUTES.NUMBER_OF_VISITS] || 1;
+    const numberOfVisits = this.attributes[SESSION_ATTRIBUTES.NUMBER_OF_VISITS]
+        || 1;
 
     console.log("YesIntent: numberOfVisits: ", numberOfVisits);
 
     if (numberOfVisits == 1) {
       this.attributes[SESSION_ATTRIBUTES.NUMBER_OF_VISITS] = numberOfVisits + 1;
-      this.emit(':ask', "Okay. I'll give you a question and both of you should take turns answering. Ready?", "Ready?");
+      this.emit(':ask',
+          "Okay. I'll give you a question and both of you should take turns answering. Ready?",
+          "Ready?");
     } else {
       this.emit('GetQuestionIntent');
     }
@@ -74,14 +79,23 @@ module.exports = {
     this.emit(':tell', 'Sure. See you later.');
   },
 
-    /**
-   * This intent will be called when the user says "Stop" or "Cancel"
-   */
+  // ----------------------- cancel handling
   'AMAZON.CancelIntent'() {
     this.emit('ExitIntent');
   },
+
   'AMAZON.StopIntent'() {
     this.emit('ExitIntent');
+  },
+
+  'ExitIntent'() {
+    this.emit(':tell', speechOutput.COMMON.GOODBYE);
+  },
+
+  // ----------------------- help handling
+  'AMAZON.HelpIntent'(){
+    this.emit(':ask', speechOutput.COMMON.HELP,
+        speechOutput.COMMON.HELP_REPROMPT);
   },
 
   /**
